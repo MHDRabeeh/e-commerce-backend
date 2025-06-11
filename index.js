@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import { connectDB } from './config/db.js';
 import userRoute from './routes/userRoute.js';
+import adminRoute from './routes/adminRoute.js'
 
 
 const app = express();
@@ -14,7 +15,7 @@ connectDB();
 
 
 app.use('/api',userRoute);
-
+app.use("/api/admin",adminRoute)
 
 app.listen(PORT,(err)=>{
     if(!err){
