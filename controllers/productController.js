@@ -5,10 +5,9 @@ export async function createProduct(req, res) {
     const { name, price, description } = req.body;
 
     const variants = Array.isArray(req.body.variants)
-    ? req.body.variants.map((v) => ({ ...v }))
-    : []
-    
-  
+      ? req.body.variants.map((v) => ({ ...v }))
+      : [];
+
     const uploadPromises = req.files
       .filter((file) => /^variants\[\d+]\[image]$/.test(file.fieldname))
       .map((file) => {
@@ -31,14 +30,35 @@ export async function createProduct(req, res) {
 
     await Promise.all(uploadPromises);
 
-    const response = await ProductModel.create({name,price,description,variants})
+    const response = await ProductModel.create({
+      name,
+      price,
+      description,
+      variants,
+    });
 
-    res.status(201).json({success:true,message:"product created successfully",response})
+    res.status(201).json({
+      success: true,
+      message: "product created successfully",
+      response,
+    });
 
     console.log(response);
   } catch (error) {
     console.error("❌ Error:", error);
-    res.status(500).json({success:false,message:error.message})
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
 
+export async function showProduct(req, res) {
+  try {
+    console.log(req.query);
+    const products = await ProductModel.find({})
+    console.log(products);
+    
+    res.status(200).json({success:true,products})
+  } catch (error) {
+    res.status(500).json({success:false,message:error.message})
+    console.log(error);
   }
 }
